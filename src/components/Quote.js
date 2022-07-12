@@ -63,26 +63,33 @@ const Quote = ({quote, update, setUpdate}) => {
             <div className='quote-info'>
               <p className='quote'>{quote.quote}</p>
               <div className='quote-source'>
-                  <p className='book'>{quote.sourceTitle} <span className='source-type'>({quote.sourceType})</span></p>
+                  <p className='source-type-title'>{quote.sourceType==='book' ? "Book":"Movie"}: </p>
+                  <p className='source-type'>{quote.sourceTitle}</p>
+                  <span className='source-author-title'>{quote.sourceType==='book' ? "Author":"Character"}: </span>
                   <p className='source-author'>{quote.sourceAuthor}</p>
               </div>
             </div>
 
             <div className='likes-container'>
-              {
-                !quote.liked || quote.liked===false ?
-                <div>
-                  <i className={`fa-regular fa-heart heart-icon ${currentUser ? "pointer":""}`} onClick={handleLike}></i>
-                  <span className='numberOfLikes'>{quote.likes}</span>
-                </div>
-                :
-                <div>
-                  <i className={`fa-solid fa-heart heart-icon ${currentUser ? "pointer":""}`} onClick={handleUnlike}></i>
-                  <span className='numberOfLikes'>{quote.likes}</span>
-              </div>
-              }
-              <Link className='added-by' to={`/profile/${quote.userId}`}>Added by: {quote.name}</Link>
-
+                {
+                  !quote.liked || quote.liked===false ?
+                  <div>
+                    <i className={`fa-regular fa-heart heart-icon ${currentUser ? "pointer":""}`} onClick={handleLike}></i>
+                    <span className='numberOfLikes'>{quote.likes}</span>
+                  </div>
+                  :
+                  <div>
+                    <i className={`fa-solid fa-heart heart-icon ${currentUser ? "pointer":""}`} onClick={handleUnlike}></i>
+                    <span className='numberOfLikes'>{quote.likes}</span>
+                  </div>
+                }
+                
+                {
+                  currentUser ? 
+                  <Link className='added-by' to={`/profile/${quote.userId}`}>Added by: {quote.name}</Link>
+                  :
+                  <p className='added-by'>Added by: {quote.name}</p>
+                }
             </div>
 
             <button className={`favoriteBtn ${hideClass}`} onClick={changeFavoriteQuote}>Make this your favourite quote</button>

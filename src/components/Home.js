@@ -54,7 +54,7 @@ const Home = () => {
 
     fetchQuotes();
 
-  },[update]);
+  },[update, currentUser]);
 
   // Fetch a random quote
   useEffect(()=>{

@@ -40,7 +40,12 @@ const AuthLogin = () => {
         })
         .catch(e=>{
           setHideError("");
-          setError(e.message);
+          
+          if(e.response.status===401){
+            setError("Incorrect email or password.");
+          }else{
+            setError(e.message);
+          }
         })
       }
     }
@@ -58,9 +63,9 @@ const AuthLogin = () => {
           </div>
           <form onSubmit={(e=>handleLogin(e))}>
               <label>Email</label>
-              <input type="text" value={email} onChange={e=>handleEmailInputChange(e)}/>
+              <input type="email" value={email} onChange={e=>handleEmailInputChange(e)}/>
               <label>Password</label>
-              <input type="text" value={password} onChange={e=>handlePasswordInputChange(e)}/>
+              <input type="password" value={password} onChange={e=>handlePasswordInputChange(e)}/>
               <button className='auth-button'>Login</button>
           </form>
       </div>

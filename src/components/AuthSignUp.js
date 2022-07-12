@@ -16,9 +16,12 @@ const AuthSignUp = () => {
       if(name.trim()==="" || email.trim()==="" || password.trim()===""){
         setError("All fields are required.");
         setHideError("");
+      }else if(password.trim().length< 6){
+        setError("Password must be at least 6 characters.");
+        setHideError("");
       }else{
-        authService.register(name, email, password)
-        .then((response)=>{
+        authService.register(name.trim(), email.trim(), password.trim())
+        .then(()=>{
           setHideSuccessMessage("");
         })
         .catch(err=>{
@@ -73,9 +76,9 @@ const AuthSignUp = () => {
               <label>Name</label>
               <input type="text" value={name} onChange={e=>handleNameInputChange(e)}/>
               <label>Email</label>
-              <input type="text" value={email} onChange={e=>handleEmailInputChange(e)}/>
+              <input type="email" value={email} onChange={e=>handleEmailInputChange(e)}/>
               <label>Password</label>
-              <input type="text" value={password} onChange={e=>handlePasswordInputChange(e)}/>
+              <input type="password" value={password} onChange={e=>handlePasswordInputChange(e)}/>
               <button className='auth-button'>Register</button>
           </form>
       </div>

@@ -22,9 +22,11 @@ const RandomQuote = ({randomQuote, setRandomQuote}) => {
           <div className='quote-info'>
             <p className='quote'>{quote.quote}</p>
             <div className='quote-source'>
-                <p className='book'>{quote.sourceTitle} <span className='source-type'>({quote.sourceType})</span></p>
-                <p className='source-author'>{quote.sourceAuthor}</p>
-            </div>
+                  <p className='source-type-title'>{quote.sourceType==='book' ? "Book":"Movie"}: </p>
+                  <p className='source-type'>{quote.sourceTitle}</p>
+                  <span className='source-author-title'>{quote.sourceType==='book' ? "Author":"Character"}: </span>
+                  <p className='source-author'>{quote.sourceAuthor}</p>
+              </div>
           </div>
 
           :
