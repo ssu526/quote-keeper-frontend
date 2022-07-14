@@ -7,18 +7,20 @@ import api from '../services/api'
 
 const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid, update, setUpdate}) => {
   const {currentUser, setCurrentUser} = useContext(UserContext);
-  const [hideClass, setHideClass] = useState("hide");
+  const [hideUpload, setHideUpload] = useState("hide");
+  const [uploadMessage, setUploadMessage] = useState("");
+  const [hideUploadMessage, setHideUploadMessage] = useState("hide");
 
 /********************** PROFILE PHOTO: DRAG & DROP, UPLOAD to AWS S3 ******************/
   const handleMouseEnter= () =>{
     if(currentUser){
-      setHideClass("")
+      setHideUpload("")
     }
   }
 
   const handleMouseLeave= () =>{
     if(currentUser){
-      setHideClass("hide")
+      setHideUpload("hide")
     }
   }
 
@@ -36,10 +38,32 @@ const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid, upd
     const file = acceptedFiles[0];
     const formData = new FormData();
     formData.append("file", file);
-    api.uploadProfileImage(formData);
+
+    setHideUpload("hide");
+    setUploadMessage("Uploading...");
+    setHideUploadMessage("upload-in-progress");
+
+    api.uploadProfileImage(formData)
+    .then(()=>{
+      setUploadMessage("Profile picture uploaded successfully. Please login again.");
+      setHideUploadMessage("upload-ok");
+
+      setTimeout(()=>{
+        setUploadMessage("");
+        setHideUploadMessage("hide")
+      },3000);
+    })
+    .catch( e => {
+      setUploadMessage("Upload failed.");
+      setHideUploadMessage("upload-error");
+
+      setTimeout(()=>{
+        setUploadMessage("");
+        setHideUploadMessage("hide")
+      },3000);
+    })
   }, [])
   const {getRootProps, getInputProps} = useDropzone({onDrop})
-
 
 /**************************************** JSX ****************************************/
   return (
@@ -54,13 +78,13 @@ const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid, upd
               userid!==undefined && userid !== currentUser.userId ?
               <div ></div>
               :
-              <div className={`upload ${hideClass}`} {...getRootProps()}>
+              <div className={`upload ${hideUpload}`} {...getRootProps()}>
                 <input {...getInputProps()} />
-                <p>click to select files</p>
+                <p>Click here to select files</p>
               </div>
             }
-
           <p className='username'>{userName}</p>
+          <p className={`upload-message-container ${hideUploadMessage}`}>{uploadMessage}</p>
         </div>
 
         {
@@ -68,9 +92,9 @@ const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid, upd
           <div></div>
           :
           <div className='favorite-quote'>
-          <p>{userFavoriteQuote}</p>
-          <p className='removeFavoriteQuote' onClick={removeFavoriteQuote}><i className="fa fa-trash"></i></p>
-      </div>
+            <p>{userFavoriteQuote}</p>
+            <p className='removeFavoriteQuote' onClick={removeFavoriteQuote}><i className="fa fa-trash"></i></p>
+        </div>
         }
     </div>
   )
