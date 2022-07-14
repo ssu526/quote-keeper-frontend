@@ -26,7 +26,7 @@ class UserService{
     }
 
     addQuote(quote, sourceType, sourceTitle, sourceAuthor){
-        return axios.post(URL+"quotes/add", {quote, sourceType, sourceTitle, sourceAuthor}, {headers: authHeader()});
+        return axios.post(URL+"user/add", {quote, sourceType, sourceTitle, sourceAuthor}, {headers: authHeader()});
     }
 
     changeFavoriteQuote(quoteId){

@@ -17,6 +17,7 @@ const Profile = () => {
 
   const handleAddQuote = (e) => {
     e.preventDefault();
+
     api.addQuote(quoteInput, sourceTypeInput, sourceTitleInput, sourceAuthorInput);
     setQuoteInput("");
     setSourceAuthorInput("");
@@ -82,7 +83,12 @@ const Profile = () => {
       {
         currentUser!==null &&
         <div className='profile-container '>
-          <ProfileBanner userid={params.userid} userName={userName} userFavoriteQuote={userFavoriteQuote} userProfileUrl={userProfileUrl}/>
+          <ProfileBanner userid={params.userid} 
+                          userName={userName} 
+                          userFavoriteQuote={userFavoriteQuote} 
+                          userProfileUrl={userProfileUrl}
+                          update={update}
+                          setUpdate={setUpdate}/>
 
           {
             // If user is viewing her own profile, show the add-quote form
@@ -90,10 +96,10 @@ const Profile = () => {
             <div className='add-quote-form'>
               <h1>Add Quote</h1>
               <form onSubmit={e=>handleAddQuote(e)}>
-                <textarea placeholder='New Quote' value={quoteInput} onChange={e=>setQuoteInput(e.target.value)}/>
+                <textarea placeholder='New Quote *' value={quoteInput} onChange={e=>setQuoteInput(e.target.value)} required/>
   
                 <div className='add-quote-info-container'>
-                  <input type="text" placeholder='Book/Movie Title' value={sourceTitleInput} onChange={e=>setSourceTitleInput(e.target.value)}/>
+                  <input type="text" placeholder='Book/Movie Title *' value={sourceTitleInput} onChange={e=>setSourceTitleInput(e.target.value)} required/>
                   <input type="text" placeholder='Author/Character' value={sourceAuthorInput} onChange={e=>setSourceAuthorInput(e.target.value)}/>
   
                   <div className='selectType'>

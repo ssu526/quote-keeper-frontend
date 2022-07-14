@@ -162,6 +162,19 @@
   left: 50px;
 }
 
+.removeFavoriteQuote{
+  text-align:right;
+}
+
+.removeFavoriteQuote i{
+  cursor: pointer;
+  color: rgb(196, 193, 193);
+}
+
+.removeFavoriteQuote i:hover{
+  color: gray;
+}
+
 /****** QUOTES CONTAINER *****/
 .quotes-container{
   width: 100%;
@@ -188,6 +201,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding-bottom: 30px;
+  white-space: pre-wrap;
 }
 
 .quote-source{
