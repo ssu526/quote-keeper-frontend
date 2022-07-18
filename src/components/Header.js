@@ -5,11 +5,17 @@ import logo from '../images/logo.PNG'
 import authService from '../services/auth-service'
 
 const Header = () => {
-  const {currentUser, setCurrentUser} = useContext(UserContext);
+  const {currentUser, setCurrentUser, setHideAddEditQuoteForm} = useContext(UserContext);
 
   const handleLogout = () => {
     authService.logout();
     setCurrentUser(null);
+  }
+
+  if(!currentUser){
+    document.title = "Quote Keeper";
+  }else{
+    document.title = "Quote Keeper - " + currentUser.name;
   }
 
   return (
@@ -18,16 +24,17 @@ const Header = () => {
         {
             !currentUser && 
               <div className='auth-container'>
-                <a href='/signup'>Sign Up</a>
-                <a href='/login'>Login</a>
+                <a href='/signup' className='header-link'>Sign Up</a>
+                <a href='/login' className='header-link'>Login</a>
               </div>
           }
 
           {
             currentUser &&
               <div className='auth-container'>
-                <Link to="/profile">My Account</Link>
-                <Link to="/" onClick={handleLogout}>Logout</Link>
+                <Link to="/profile" className='header-link'>My Account</Link>
+                <button onClick={()=>setHideAddEditQuoteForm("")} className='header-link'>New Quote</button>
+                <Link to="/" onClick={handleLogout} className='header-link'>Logout</Link>
               </div>
           }
     </div>

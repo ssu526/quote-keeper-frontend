@@ -6,13 +6,12 @@ import Quote from './Quote'
 import api from '../services/api';
 
 const Home = () => {
-  const {currentUser} = useContext(UserContext);
+  const {currentUser, update} = useContext(UserContext);
   const [quotes, setQuotes] = useState([]);
   const [originalQuotes, setOriginalQuotes] = useState([]);
   const [randomQuote, setRandomQuote] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
-  const [update, setUpdate] = useState(false);
   const [searchText, setSearchText] = useState("");
 
   // Fetch all quotes
@@ -66,12 +65,19 @@ const Home = () => {
 
   // Search quotes
   useEffect(()=>{
-    let searchResult = quotes.filter(quote => quote.quote.toLowerCase().includes(searchText.trim().toLowerCase()));
+    let searchTextTrimmed = searchText.trim().toLocaleLowerCase();
+
+    // let searchResult= originalQuotes.filter(quote => quote.quote.toLowerCase().includes(searchTextTrimmed));
+
+    let searchResult_searchByQuote = originalQuotes.filter(quote => quote.quote.toLowerCase().includes(searchTextTrimmed));
+    let searchResult_searchByTitle = originalQuotes.filter(quote => quote.sourceTitle.toLocaleLowerCase().includes(searchTextTrimmed));
+    // let searchResult = [...searchResult_searchByQuote, ...searchResult_searchByTitle];
+    let searchResult = new Set([...searchResult_searchByQuote, ...searchResult_searchByTitle]);
 
     if(searchText.trim()===""){
       setQuotes(originalQuotes);
     }else{
-      setQuotes(searchResult);
+      setQuotes(Array.from(searchResult));
     }
   }, [searchText])
 
@@ -93,7 +99,7 @@ const Home = () => {
           !fetchError && !isLoading &&
           <div className='quotes-container'>
           {
-              quotes.map(q=><Quote quote={q} update={update} setUpdate={setUpdate} key={q.quoteId}/>)
+              quotes.map(q=><Quote quote={q} key={q.quoteId}/>)
           }
         </div>  
         }  

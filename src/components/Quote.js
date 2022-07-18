@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom'
 import api from '../services/api'
 
 
-const Quote = ({quote, update, setUpdate}) => {
-  const {currentUser,setCurrentUser} = useContext(UserContext);
+const Quote = ({quote}) => {
+  const {currentUser,setCurrentUser, setHideAddEditQuoteForm, setEditQuote, update, setUpdate} = useContext(UserContext);
   const [hideClass, setHideClass] = useState("hide");
 
   /********************************** Event Handlers************************************/
   const handleLike = () => {
     if(currentUser!==null){
       api.likeQuote(quote.quoteId)
-      .then(response=>{
+      .then(()=>{
         quote.like=true;
         setUpdate(!update);
       })
@@ -22,7 +22,7 @@ const Quote = ({quote, update, setUpdate}) => {
   const handleUnlike = () => {
     if(currentUser!==null){
       api.unlikeQuote(quote.quoteId)
-      .then(response=>{
+      .then(()=>{
         quote.like=false;
         setUpdate(!update);
       })
@@ -41,6 +41,11 @@ const Quote = ({quote, update, setUpdate}) => {
     }
   }
 
+  const handleEditButton = () => {
+    setHideAddEditQuoteForm("");
+    setEditQuote(quote);
+  }
+
   /*********************************** Helper Functions ********************************/
   const changeFavoriteQuote = () =>{
     const quoteId = quote.quoteId;
@@ -52,7 +57,6 @@ const Quote = ({quote, update, setUpdate}) => {
       setUpdate(!update);
     })
   }
-
 
   /**************************************** JSX ****************************************/
   return (
@@ -83,16 +87,13 @@ const Quote = ({quote, update, setUpdate}) => {
                     <span className='numberOfLikes'>{quote.likes}</span>
                   </div>
                 }
-                
-                {
-                  currentUser ? 
-                  <Link className='added-by' to={`/profile/${quote.userId}`}>Added by: {quote.name}</Link>
-                  :
-                  <p className='added-by'>Added by: {quote.name}</p>
-                }
             </div>
 
-            <button className={`favoriteBtn ${hideClass}`} onClick={changeFavoriteQuote}>Make this your favourite quote</button>
+            <div className={`quote-operations ${hideClass}`}>
+              <button className="favoriteBtn" onClick={changeFavoriteQuote}>Make this your favourite quote</button>
+              <button className="editQuoteBtn" onClick={handleEditButton}>Edit Quote</button>
+              <Link className="added-by" to={`/profile/${quote.userId}`}>Added by:<br/> {quote.name}</Link>
+            </div>
         </div>
       }
     </div>

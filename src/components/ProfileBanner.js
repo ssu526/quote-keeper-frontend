@@ -5,8 +5,8 @@ import { useDropzone } from 'react-dropzone'
 import profile_placeholder from '../images/profile_placeholder.png'
 import api from '../services/api'
 
-const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid, update, setUpdate}) => {
-  const {currentUser, setCurrentUser} = useContext(UserContext);
+const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid}) => {
+  const {currentUser, setCurrentUser, update, setUpdate} = useContext(UserContext);
   const [hideUpload, setHideUpload] = useState("hide");
   const [uploadMessage, setUploadMessage] = useState("");
   const [hideUploadMessage, setHideUploadMessage] = useState("hide");
@@ -34,6 +34,7 @@ const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid, upd
     })
   }
 
+  // Upload profile picture
   const onDrop = useCallback(acceptedFiles => {
     const file = acceptedFiles[0];
     const formData = new FormData();

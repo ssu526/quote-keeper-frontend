@@ -9,30 +9,13 @@ const Profile = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  /***************** States and handler for the add-quote form *****************/
-  const [quoteInput, setQuoteInput] = useState("");
-  const [sourceTitleInput, setSourceTitleInput] = useState("");
-  const [sourceAuthorInput, setSourceAuthorInput] = useState("");
-  const [sourceTypeInput, setSourceTypeInput] = useState("book");
-
-  const handleAddQuote = (e) => {
-    e.preventDefault();
-
-    api.addQuote(quoteInput, sourceTypeInput, sourceTitleInput, sourceAuthorInput);
-    setQuoteInput("");
-    setSourceAuthorInput("");
-    setSourceTitleInput("");
-    setSourceTypeInput("");
-  }
-
   /************************ States for user profile and user quotes *************/
-  const {currentUser} = useContext(UserContext);
+  const {currentUser, update} = useContext(UserContext);
 
   const [userName, setUserName] = useState("");
   const [userFavoriteQuote, setUserFavoriteQuote] = useState("");
   const [userProfileUrl, setUserProfileUrl] = useState("");
   const [quotes, setQuotes] = useState([]);
-  const [update, setUpdate] = useState(false);  // This is used in the 'Quote' component. This is used to refresh the component after user like/unlike a quote
 
   useEffect(() => {
     if(currentUser===null){navigate("/login");}
@@ -82,45 +65,18 @@ const Profile = () => {
     <div>
       {
         currentUser!==null &&
-        <div className='profile-container '>
-          <ProfileBanner userid={params.userid} 
-                          userName={userName} 
-                          userFavoriteQuote={userFavoriteQuote} 
-                          userProfileUrl={userProfileUrl}
-                          update={update}
-                          setUpdate={setUpdate}/>
+        <div className='profile-container main-container'>
+            <ProfileBanner userid={params.userid} 
+                            userName={userName} 
+                            userFavoriteQuote={userFavoriteQuote} 
+                            userProfileUrl={userProfileUrl}/>
 
-          {
-            // If user is viewing her own profile, show the add-quote form
-            params.userid===undefined ?
-            <div className='add-quote-form'>
-              <h1>Add Quote</h1>
-              <form onSubmit={e=>handleAddQuote(e)}>
-                <textarea placeholder='New Quote *' value={quoteInput} onChange={e=>setQuoteInput(e.target.value)} required/>
-  
-                <div className='add-quote-info-container'>
-                  <input type="text" placeholder='Book/Movie Title *' value={sourceTitleInput} onChange={e=>setSourceTitleInput(e.target.value)} required/>
-                  <input type="text" placeholder='Author/Character' value={sourceAuthorInput} onChange={e=>setSourceAuthorInput(e.target.value)}/>
-  
-                  <div className='selectType'>
-                    <input type="radio" value="book" name='type' checked={sourceTypeInput=== "book"} onChange={()=>setSourceTypeInput("book")}/><span>Book</span>
-                    <input type="radio" value="movie" name='type' checked={sourceTypeInput==="movie"} onChange={()=>setSourceTypeInput("movie")}/><span>Movie</span>
-                  </div>
-  
-                  <button className='add-quote-btn'>Add Quote</button>
-                </div>
-              </form>
+            <h1>My Quotes</h1>
+            <div className='quotes-container'>
+              {
+                  quotes.map(q=><Quote quote={q} key={q.quoteId}/>)
+              }
             </div>
-            :
-            <div></div>
-          }
-
-          <h1>My Quotes</h1>
-          <div className='quotes-container'>
-            {
-                quotes.map(q=><Quote quote={q} update={update} setUpdate={setUpdate} key={q.quoteId}/>)
-            }
-          </div>
         </div>
       }
     </div>

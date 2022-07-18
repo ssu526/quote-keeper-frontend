@@ -6,6 +6,7 @@ import Home from './components/Home';
 import AuthSignUp from './components/AuthSignUp';
 import AuthLogin from './components/AuthLogin';
 import UserContextProvider from './context/UserContext';
+import AddEditQuoteForm from './components/AddEditQuoteForm';
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
     <UserContextProvider>
       <div className="App">
         <Header/>
+        <AddEditQuoteForm/>
 
         <Routes>
           <Route path='/' element={<Home/>}></Route>
@@ -22,6 +24,7 @@ function App() {
           <Route path='/login' element={<AuthLogin/>}></Route>
         </Routes>
       </div>
+
     </UserContextProvider>
 
   );
