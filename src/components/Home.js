@@ -109,7 +109,7 @@ const Home = () => {
           !fetchError && !isLoading &&
           <div className='quotes-container'>
           {
-              quotes.map(q=><Quote key={q.quoteId} quote={q} setGoToLoginPage={setRedirectToLoginPage}/>)
+              quotes.map(q=><Quote key={q.quoteId} quote={q} setRedirectToLoginPage={setRedirectToLoginPage}/>)
           }
         </div>  
         }  

@@ -441,11 +441,13 @@
 }
 
 .add-quote-btn:hover{
-  background-color: rgb(166, 221, 166);
+  background-color: rgb(110, 145, 110);
+  color: white;
 }
 
 .cancel-btn:hover{
-  background-color: rgb(233, 181, 181);
+  background-color: rgb(197, 133, 133);
+  color: white;
 }
 
 
