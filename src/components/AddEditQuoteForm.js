@@ -1,28 +1,40 @@
-import React, {useState} from 'react'
-import api from '../services/api'
+import React, {useState, useContext, useEffect} from 'react'
 import { UserContext } from '../context/UserContext';
-import { useContext } from 'react';
-import { useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import authService from '../services/auth-service';
+import api from '../services/api'
 
 const AddEditQuoteForm = () => {
-    const {hideAddEditQuoteForm, setHideAddEditQuoteForm, editQuote, setEditQuote, update, setUpdate} = useContext(UserContext);
+  const {hideAddEditQuoteForm, setHideAddEditQuoteForm, setCurrentUser, editQuote, setEditQuote, update, setUpdate} = useContext(UserContext);
+  const navigate = useNavigate();
 
-    /***************** States and handler for the add-quote form *****************/
-    const [quoteInput, setQuoteInput] = useState("");
-    const [sourceTitleInput, setSourceTitleInput] = useState("");
-    const [sourceAuthorInput, setSourceAuthorInput] = useState("");
-    const [sourceTypeInput, setSourceTypeInput] = useState("book");
+  /***************** States for the add and edit quote form *****************/
+  const [quoteInput, setQuoteInput] = useState("");
+  const [sourceTitleInput, setSourceTitleInput] = useState("");
+  const [sourceAuthorInput, setSourceAuthorInput] = useState("");
+  const [sourceTypeInput, setSourceTypeInput] = useState("book");
   
-  const handleAddQuote = (e) => {
+  /***************** handler for the add and edit quote form *****************/
+  const handleAddEditQuote = (e) => {
     e.preventDefault();
+    const quoteId = editQuote===null ? -1 : editQuote.quoteId;
 
-    if(editQuote===null){
-      api.addQuote(-1, quoteInput, sourceTypeInput, sourceTitleInput, sourceAuthorInput);
-    }else{
-      api.addQuote(editQuote.quoteId, quoteInput, sourceTypeInput, sourceTitleInput, sourceAuthorInput);
-    }
-    
-    setUpdate(!update);
+    // quoteId==-1: addQuote() is for adding a new quote; Otherwise, it is for updating an existing quote
+    api.addQuote(quoteId, quoteInput, sourceTypeInput, sourceTitleInput, sourceAuthorInput)
+    .then(()=>{
+      setUpdate(!update);
+    })
+    .catch(()=>{
+      authService.logout();
+      setCurrentUser(null);
+      navigate("/login");
+    })
+    .finally(()=>{
+      resetAddEditForm();
+    })
+  }
+
+  const resetAddEditForm = () =>{
     setQuoteInput("");
     setSourceAuthorInput("");
     setSourceTitleInput("");
@@ -31,15 +43,11 @@ const AddEditQuoteForm = () => {
     setEditQuote(null);
   }
 
-  const handleCancel = (e) => {
-    setQuoteInput("");
-    setSourceAuthorInput("");
-    setSourceTitleInput("");
-    setSourceTypeInput("book");
-    setHideAddEditQuoteForm("hide-form");
-    setEditQuote(null);
-  }
-
+ 
+  /*
+    If editQuote in the context is null, it is a add new quote request
+    If editQuote in the context is not null, it is a edit exsiting quost request. Populate the form with the selected quote
+  */
   useEffect(()=>{
     if(editQuote!==null){
       setQuoteInput(editQuote.quote);
@@ -49,9 +57,10 @@ const AddEditQuoteForm = () => {
     }
   }, [editQuote])
   
+
   return (
     <div className={`add-quote-form ${hideAddEditQuoteForm}`}>
-      <form onSubmit={e=>handleAddQuote(e)}>
+      <form onSubmit={e=>handleAddEditQuote(e)}>
         <h1>{editQuote===null ? "Add Quote":"Edit Quote"}</h1>
         <textarea placeholder='New Quote *' value={quoteInput} onChange={e=>setQuoteInput(e.target.value)} required/>
 
@@ -66,7 +75,7 @@ const AddEditQuoteForm = () => {
 
           <div className='quote-form-buttons'>
             <button type='submit' className='add-quote-btn'>{editQuote===null ? "Add Quote":"Update Quote"}</button>
-            <button type='button' className='cancel-btn' onClick={e=>handleCancel(e)}>Cancel</button>
+            <button type='button' className='cancel-btn' onClick={resetAddEditForm}>Cancel</button>
           </div>
         </div>
       </form>

@@ -4,6 +4,9 @@ import authHeader from "./auth-header";
 const URL = 'http://localhost:8080/';
 
 class UserService{
+    getRandomQuote(){
+        return axios.get(URL+"quotes/random");
+    }
 
     getUserById(userid){
         return axios.get(URL+"user/"+userid)
@@ -11,10 +14,6 @@ class UserService{
 
     getUserQuotes(userid){
         return axios.get(URL+"quotes/user-quotes/"+userid, {headers: authHeader()});
-    }
-
-    getRandomQuote(){
-        return axios.get(URL+"quotes/random");
     }
 
     likeQuote(quoteId){

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Poppins:wght@100;200;300&display=swap');
 
 *{
   margin: 0;
@@ -142,7 +142,14 @@
 
 
 /************ Profile Banner ***********/
+.profile-container h1{
+  margin-top: 50px;
+  margin-bottom: 20px;
+  font-size: 30px;
+}
+
 .profile-banner{
+  width: 100%;
   display: flex;
   align-items: center;
   margin-bottom: 30px;
@@ -172,6 +179,12 @@
 
 .favorite-quote{
   flex: 1;
+}
+
+.favorite-quote p{
+  font-size: 20px;
+  font-family: 'Cedarville Cursive', cursive;
+  white-space: pre-wrap;
 }
 
 .favorite-quote .quote-main-container{
@@ -342,11 +355,7 @@
 
 .favoriteBtn:hover, .editQuoteBtn:hover, .added-by:hover{
   background-color: rgb(243, 223, 204);
-}
-
-/************ PROFILE CONTAINER ***********/
-.profile-container h1{
-  margin-top: 50px;
+  font-weight: bold;
 }
 
 /************ FORMS - ADD QUOTE***********/

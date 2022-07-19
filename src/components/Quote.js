@@ -1,20 +1,30 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import { UserContext } from '../context/UserContext'
 import { Link } from 'react-router-dom'
 import api from '../services/api'
 
-
-const Quote = ({quote}) => {
+const Quote = ({quote, setRedirectToLoginPage}) => {
   const {currentUser,setCurrentUser, setHideAddEditQuoteForm, setEditQuote, update, setUpdate} = useContext(UserContext);
   const [hideClass, setHideClass] = useState("hide");
+
+  useEffect(()=>{
+    if(currentUser===null){
+      setHideClass("hide");
+    }
+  },[currentUser])
 
   /********************************** Event Handlers************************************/
   const handleLike = () => {
     if(currentUser!==null){
       api.likeQuote(quote.quoteId)
       .then(()=>{
-        quote.like=true;
-        setUpdate(!update);
+          quote.like=true;
+          setUpdate(!update);
+      })
+      .catch(e=>{
+        if(e.response.status===403){
+          setRedirectToLoginPage(true);
+        }
       })
     }
   }
@@ -25,6 +35,11 @@ const Quote = ({quote}) => {
       .then(()=>{
         quote.like=false;
         setUpdate(!update);
+      })
+      .catch(e=>{
+        if(e.response.status===403){
+          setRedirectToLoginPage(true);
+        }
       })
     }
   }
@@ -49,12 +64,18 @@ const Quote = ({quote}) => {
   /*********************************** Helper Functions ********************************/
   const changeFavoriteQuote = () =>{
     const quoteId = quote.quoteId;
-    api.changeFavoriteQuote(quoteId).then(()=>{
+    api.changeFavoriteQuote(quoteId)
+    .then(()=>{
       let user = JSON.parse(localStorage.getItem("user"));
       user.favoriteQuote={quoteId:quoteId, quote:quote.quote}
       localStorage.setItem("user", JSON.stringify(user));
       setCurrentUser(user);
       setUpdate(!update);
+    })
+    .catch(e=>{
+      if(e.response.status===403){
+        setRedirectToLoginPage(true);
+      }
     })
   }
 
@@ -90,9 +111,9 @@ const Quote = ({quote}) => {
             </div>
 
             <div className={`quote-operations ${hideClass}`}>
-              <button className="favoriteBtn" onClick={changeFavoriteQuote}>Make this your favourite quote</button>
+              <button className="favoriteBtn" onClick={changeFavoriteQuote}>Make it your favourite quote</button>
               <button className="editQuoteBtn" onClick={handleEditButton}>Edit Quote</button>
-              <Link className="added-by" to={`/profile/${quote.userId}`}>Added by:<br/> {quote.name}</Link>
+              <Link className="added-by" to={`/profile/${quote.userId}`}>Added by: {quote.name}</Link>
             </div>
         </div>
       }

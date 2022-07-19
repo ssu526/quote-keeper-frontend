@@ -4,15 +4,19 @@ import { useContext } from 'react'
 import RandomQuote from './RandomQuote';
 import Quote from './Quote'
 import api from '../services/api';
+import authService from '../services/auth-service';
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const {currentUser, update} = useContext(UserContext);
+  const navigate = useNavigate();
+  const {currentUser, setCurrentUser, update} = useContext(UserContext);
   const [quotes, setQuotes] = useState([]);
   const [originalQuotes, setOriginalQuotes] = useState([]);
   const [randomQuote, setRandomQuote] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [searchText, setSearchText] = useState("");
+  const [redirectToLoginPage, setRedirectToLoginPage] = useState(false);
 
   // Fetch all quotes
   useEffect(()=>{
@@ -35,14 +39,15 @@ const Home = () => {
               const newQuote = userQuotes.includes(quote.quoteId) ? {...quote, liked:true} : {...quote, liked:false};
               return newQuote;
             })
-            
             setQuotes(allQuotes);
             setOriginalQuotes(allQuotes);
-            
           })
-          .catch(err => {
-            console.log(err.message)
-          })
+          .catch(err=>{
+            if(err.response.status===401){
+              authService.logout();
+              setCurrentUser(null);
+            }
+          }); 
         }
       }catch(err){
         setFetchError(err.message);
@@ -66,12 +71,8 @@ const Home = () => {
   // Search quotes
   useEffect(()=>{
     let searchTextTrimmed = searchText.trim().toLocaleLowerCase();
-
-    // let searchResult= originalQuotes.filter(quote => quote.quote.toLowerCase().includes(searchTextTrimmed));
-
     let searchResult_searchByQuote = originalQuotes.filter(quote => quote.quote.toLowerCase().includes(searchTextTrimmed));
     let searchResult_searchByTitle = originalQuotes.filter(quote => quote.sourceTitle.toLocaleLowerCase().includes(searchTextTrimmed));
-    // let searchResult = [...searchResult_searchByQuote, ...searchResult_searchByTitle];
     let searchResult = new Set([...searchResult_searchByQuote, ...searchResult_searchByTitle]);
 
     if(searchText.trim()===""){
@@ -81,6 +82,15 @@ const Home = () => {
     }
   }, [searchText])
 
+
+  // Redirect to login page if token expired
+  useEffect(()=>{
+    if(redirectToLoginPage){
+      navigate("/login");
+      authService.logout();
+      setCurrentUser(null);
+    }
+  },[redirectToLoginPage])
 
   return (
     <div className='main-container'>
@@ -99,7 +109,7 @@ const Home = () => {
           !fetchError && !isLoading &&
           <div className='quotes-container'>
           {
-              quotes.map(q=><Quote quote={q} key={q.quoteId}/>)
+              quotes.map(q=><Quote key={q.quoteId} quote={q} setGoToLoginPage={setRedirectToLoginPage}/>)
           }
         </div>  
         }  

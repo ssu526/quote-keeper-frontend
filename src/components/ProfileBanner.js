@@ -5,7 +5,7 @@ import { useDropzone } from 'react-dropzone'
 import profile_placeholder from '../images/profile_placeholder.png'
 import api from '../services/api'
 
-const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid}) => {
+const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid, setRedirectToLoginPage}) => {
   const {currentUser, setCurrentUser, update, setUpdate} = useContext(UserContext);
   const [hideUpload, setHideUpload] = useState("hide");
   const [uploadMessage, setUploadMessage] = useState("");
@@ -32,6 +32,11 @@ const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid}) =>
       setCurrentUser(user);
       setUpdate(!update);
     })
+    .catch(e=>{
+      if(e.response.status===403){
+        setRedirectToLoginPage(true);
+      }
+    })
   }
 
   // Upload profile picture
@@ -55,13 +60,17 @@ const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid}) =>
       },3000);
     })
     .catch( e => {
-      setUploadMessage("Upload failed.");
-      setHideUploadMessage("upload-error");
-
-      setTimeout(()=>{
-        setUploadMessage("");
-        setHideUploadMessage("hide")
-      },3000);
+      if(e.response.status===403){
+        setRedirectToLoginPage(true);
+      }else{
+        setUploadMessage("Upload failed.");
+        setHideUploadMessage("upload-error");
+  
+        setTimeout(()=>{
+          setUploadMessage("");
+          setHideUploadMessage("hide")
+        },3000);
+      }
     })
   }, [])
   const {getRootProps, getInputProps} = useDropzone({onDrop})
@@ -76,6 +85,7 @@ const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid}) =>
             alt='profile'/>
 
             {
+              // If current user is viewing another user's profile, do not show the upload profile picture option
               userid!==undefined && userid !== currentUser.userId ?
               <div ></div>
               :
@@ -89,8 +99,9 @@ const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid}) =>
         </div>
 
         {
-          userFavoriteQuote==="" ?
-          <div></div>
+          // If current user is viewing another user's profile or there's no favorite quote, do not show the remove favorite quote button
+          userFavoriteQuote==="" || userid!==undefined && userid !== currentUser.userId ?
+          <p>{userFavoriteQuote}</p>
           :
           <div className='favorite-quote'>
             <p>{userFavoriteQuote}</p>
