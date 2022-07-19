@@ -81,6 +81,7 @@ const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid, set
         <div className='user-info-container' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
           <img 
             src={userProfileUrl==="" || userProfileUrl===null ? profile_placeholder : userProfileUrl} 
+            onError={(e)=>e.target.src=profile_placeholder}
             className='profile-image' 
             alt='profile'/>
 
