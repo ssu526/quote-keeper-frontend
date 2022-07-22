@@ -6,6 +6,7 @@ import api from '../services/api'
 const Quote = ({quote, setRedirectToLoginPage}) => {
   const {currentUser,setCurrentUser, setHideAddEditQuoteForm, setEditQuote, update, setUpdate} = useContext(UserContext);
   const [hideClass, setHideClass] = useState("hide");
+  const LONG_QUOTE_LENGTH = 300;
 
   useEffect(()=>{
     if(currentUser===null){
@@ -81,7 +82,7 @@ const Quote = ({quote, setRedirectToLoginPage}) => {
 
   /**************************************** JSX ****************************************/
   return (
-    <div className='quote-main-container' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div className={`quote-main-container ${quote.quote.length>LONG_QUOTE_LENGTH ? "long-quote":""}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       {
         quote!==null && quote!==undefined &&
         <div className='quote-container'>

@@ -257,23 +257,26 @@
 
 /****** QUOTES CONTAINER *****/
 .quotes-container{
-  column-count: 2;
-  column-gap: 30px;
-  margin-bottom: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 /************ QUOTE CONTAINER ***********/
 .quote-main-container{
   border-radius: 10px;
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  margin-bottom: 30px;
   background-color: rgb(250, 247, 244);
+  position: relative;
+  width: 48%;
+  margin-bottom: 30px;
 }
 
 .quote-main-container:hover{
   background-color: rgba(206, 221, 221);
+}
+
+.long-quote{
+  width: 100%;
 }
 
 .quote-main-container .quote-container{
@@ -562,8 +565,8 @@
     width: 400px;
   }
 
-  .quotes-container{
-    column-count: 1;
+  .quote-main-container{
+    width: 100%;
   }
 
   .profile-image{
