@@ -11,7 +11,6 @@ const Profile = () => {
   const params = useParams();
   const {currentUser, setCurrentUser, update} = useContext(UserContext);
 
-
   /************************* States for user profile and user quotes ****************/
   const [userName, setUserName] = useState("");
   const [userFavoriteQuote, setUserFavoriteQuote] = useState("");
