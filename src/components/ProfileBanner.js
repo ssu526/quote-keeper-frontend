@@ -101,12 +101,14 @@ const ProfileBanner = ({userName, userFavoriteQuote, userProfileUrl, userid, set
 
         {
           // If current user is viewing another user's profile or there's no favorite quote, do not show the remove favorite quote button
-          userFavoriteQuote==="" || (userid!==undefined && userid !== currentUser.userId) ?
-          <p className='favorite-quote'>{userFavoriteQuote}</p>
-          :
           <div className='favorite-quote-container'>
             <p className='favorite-quote'>{userFavoriteQuote}</p>
-            <p className='removeFavoriteQuote' onClick={removeFavoriteQuote}><i className="fa fa-trash"></i></p>
+            {
+              userFavoriteQuote==="" || (userid!==undefined && userid !== currentUser.userId) ? 
+              <div></div>
+              :
+              <p className='removeFavoriteQuote' onClick={removeFavoriteQuote}><i className="fa fa-trash"></i></p>
+            }
         </div>
         }
     </div>

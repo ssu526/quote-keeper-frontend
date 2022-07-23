@@ -39,7 +39,11 @@ const Profile = () => {
           const data = response.data;
           setUserName(data.name);
           setUserProfileUrl(data.profileImageUrl);
-          if(data.favoriteQuote) setUserFavoriteQuote(data.favoriteQuote.quote);
+          if(data.favoriteQuote){
+            setUserFavoriteQuote(data.favoriteQuote.quote);
+          }else{
+            setUserFavoriteQuote("");
+          }
         })
         .catch(e=>{throw e})
 
